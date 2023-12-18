@@ -77,3 +77,36 @@ console.log("-------------------------------------------------------------------
 //Probamos el funcionamiento del metodo getProductById deberiamos recibir el producto con id 3 y el error ID 10 not found
 console.log(productsManagement.getProductById(3));
 console.log(productsManagement.getProductById(10));
+
+
+
+
+
+// updateProduct = async (idProduct, product) => {
+//     try {
+//         const products = await this.getProducts();
+//         const indexProduct = products.findIndex(p => p.id === idProduct);
+
+//         if (indexProduct != -1) {
+//             if (products.some(p => p.code === product.code)) {
+//                 console.log(`El codigo de prodcuto "${product.code}" ya se encuentra registrado`)
+//             }
+//             else {
+//                 Object.assign(products[indexProduct], { title: product.title })
+//                 Object.assign(products[indexProduct], { description: product.description })
+//                 Object.assign(products[indexProduct], { code: product.code })
+//                 Object.assign(products[indexProduct], { price: product.price })
+//                 Object.assign(products[indexProduct], { status: product.status })
+//                 Object.assign(products[indexProduct], { category: product.category })
+//                 Object.assign(products[indexProduct], { thumbnail: product.thumbnail })
+//                 await fs.promises.writeFile(this.path, JSON.stringify(products, null, '\t'));
+//                 return true;
+//             }
+//         } else {
+//             return false;
+//         }
+
+//     } catch (error) {
+//         console.log(error);
+//     }
+// }
