@@ -1,0 +1,38 @@
+[
+	{
+		"title": "Core i7 8700k",
+		"description": "Microprocesador intel i7 8va Generacion",
+		"price": 2000,
+		"thumbnail": "/core-i7-8700k.png",
+		"code": "CPU001",
+		"stock": 25,
+		"id": 1
+	},
+	{
+		"title": "Core i5 8400",
+		"description": "Microprocesador intel i5 8va Generacion",
+		"price": 2000,
+		"thumbnail": "/core-i5-8400.png",
+		"code": "CPU002",
+		"stock": 25,
+		"id": 2
+	},
+	{
+		"title": "Corsair 32GB",
+		"description": "Memoria Ram Corsair 32GB DDR4",
+		"price": 1500,
+		"thumbnail": "/corsair-32GB.png",
+		"code": "Mem001",
+		"stock": 15,
+		"id": 3
+	},
+	{
+		"title": "1050TI 4GB",
+		"description": "Placa de video Asus 1050TI 4GB",
+		"price": 2500,
+		"thumbnail": "/1050TI-4GB.png",
+		"code": "GPU001",
+		"stock": 50,
+		"id": 5
+	}
+]
