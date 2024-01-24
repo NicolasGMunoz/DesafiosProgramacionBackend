@@ -18,9 +18,9 @@ app.get('/products', async (req, res) =>{
     if(limit){
         let productsLimit = products.slice(0, limit);
         return res.send(productsLimit);
-    }else{
-        res.send(products)
     }
+       return res.send(products)
+    
 
 });
 
