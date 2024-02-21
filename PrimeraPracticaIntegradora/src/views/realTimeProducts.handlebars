@@ -2,10 +2,19 @@
     <h1>Lista de Productos</h1>
 </div>
 
-<div>
-    <div id="viewProducts">
+<div class="viewProducts">
+    {{#each products}}
+        <ul class="product">
+            <li><span>Tittle: </span>{{this.title}}</li>
+            <li><span>Description: </span>{{this.description}}</li>
+            <li><span>Price: </span>${{this.price}}</li>
+            <li><span>Stock: </span>{{this.stock}}</li>
+            <li><span>ID: </span>{{this._id}}</li>
+        </ul>
+    {{/each}}
+</div>
 
-    </div>
+<div>
     <div>
         <form id="form1">
             <label for="addproduct">Ingrese un producto</label>
@@ -20,19 +29,9 @@
             <input type="submit" value="Eliminar" class="btn-product">
         </form>
     </div>
-
-<div class="viewProducts">
-    {{#each products}}
-        <ul class="product">
-            <li><span>Title:</span>  {{this.title}}</li>
-            <li><span>Description:</span> {{this.description}}</li>
-            <li><span>Code:</span> {{this.code}}</li>
-            <li><span>Price:</span> ${{this.price}}</li>
-            <li><span>Stock:</span> {{this.stock}}</li>
-            <li><span>Thumbnail:</span> {{this.thumbnail}}</li>
-            <li><span>id:</span> {{this.id}}</li>
-        </ul>
-    {{/each}}
 </div>
-<script src="/socket.io/socket.io.js"></script>
-<script src="/js/index.js"></script>
+
+
+
+
+<script src="/js/realtimeproducts.js"></script>
