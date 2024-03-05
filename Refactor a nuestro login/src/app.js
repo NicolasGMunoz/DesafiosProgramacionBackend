@@ -8,6 +8,8 @@ import viewsRouter from './routes/views.router.js'
 import session from "express-session"
 import MongoStore from "connect-mongo"
 import sessionsRouter from './routes/sessions.router.js';
+import passport from "passport"
+
 
 const app = express();
 

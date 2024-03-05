@@ -1,73 +1,44 @@
 import { Router } from "express";
 import UsersManager from "../dao/dbManager/managers/users.managers.js";
+import passport from "passport";
 
 const router = Router();
 const userManager = new UsersManager();
 
 router
-	.post("/register", async (req, res) => {
-		try {
-			const { first_name, last_name, age, email, password } = req.body;
-			if (!first_name || !last_name || !age || !email || !password)
-				return res
-					.status(422)
-					.send({ status: "error", message: "incomplete values" });
-
-			const exists = await userManager.getOne({ email });
-			if (exists)
-				return res
-					.status(400)
-					.send({ status: "error", message: "user already exists" });
-			const result = await userManager.create({
-				first_name,
-				last_name,
-				email,
-				age,
-				password
-			});
-
+	.post(
+		"/register",
+		passport.authenticate("register", { failureRedirect: "fail-register" }),
+		async (req, res) => {
 			return res
 				.status(201)
 				.send({ status: "success", message: "user registered" });
-		} catch (error) {
-			return res.status(500).send({ status: "error", message: error.message });
 		}
+	)
+	.get("/fail-register", async (req, res) => {
+		return res.status(500).send({ status: "error", message: "register fail" });
 	})
-	.post("/login", async (req, res) => {
-		try {
-			const { email, password } = req.body;
-			if (!email || !password)
+	.post(
+		"/login",
+		passport.authenticate("login", { failureRedirect: "fail-login" }),
+		async (req, res) => {
+			if (!req.user)
 				return res
-					.status(422)
-					.send({ status: "error", message: "incomplete values" });
+					.status(401)
+					.send({ status: "error", message: "invalid credentials" });
 
-			if (
-				email.trim() === "adminCoder@coder.com" &&
-				password === "adminCod3r123"
-			) {
-				req.session.user = {
-					name: `Admin Coder`,
-					email: email,
-					role: "admin"
-				};
-				return res.send({ status: "success", message: "login success" });
-			}
-			const user = await userManager.getOne({ email, password });
-			if (!user)
-				return res
-					.status(400)
-					.send({ status: "error", message: "incorrect credentials" });
 			req.session.user = {
-				name: `${user.first_name} ${user.last_name}`,
-				email: user.email,
-				age: user.age,
-				role: "user"
+				name: `${req.user.first_name} ${req.user?.last_name ? req.user?.last_name : ""}`,
+				email: req.user.email,
+				age: req.user.age,
+				role: req.user.role
 			};
-			res.send({ status: "success", message: "login success" });
-			return res.redirect("/products");
-		} catch (error) {
-			return res.status(500).send({ status: "error", message: error.message });
+			console.log("HOLA")
+			return res.send({ status: "success", message: "login success" });
 		}
+	)
+	.get("/fail-login", async (req, res) => {
+		return res.status(500).send({ status: "error", message: "login fail" });
 	})
 	.get("/logout", async (req, res) => {
 		req.session.destroy((error) => {
@@ -77,6 +48,28 @@ router
 					.send({ status: "error", message: error.message });
 			return res.redirect("/");
 		});
-	});
+	})
+	.get(
+		"/github",
+		passport.authenticate("github", { scope: ["user:email"] }),
+		async (req, res) => {
+	
+
+			res.send({ status: "success", message: "user registered" });
+		}
+	)
+	.get(
+		"/github-callback",
+		passport.authenticate("github", { failureRedirect: "/login" }),
+		async (req, res) => {
+			req.session.user = {
+				name: `${req.user.first_name} ${req.user?.last_name ? req.user?.last_name : ""}`,
+				email: req.user.email,
+				age: req.user.age,
+				role: req.user.role
+			};
+			return res.redirect("/products");
+		}
+	);
 
 export default router;
