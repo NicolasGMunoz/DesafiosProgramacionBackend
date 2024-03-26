@@ -3,10 +3,30 @@ import GitHubStrategy from "passport-github2"
 import usersModel from "../dao/dbManager/models/user.model.js";
 import local from "passport-local"
 import { createHash , isValidPassword } from '../util.js'
+import { passportStrategiesEnum } from './enums.js'
+import { PRIVATE_KEY_JWT } from './constant.js'
+import jwt from'passport-jwt'
+
 
 const LocalStrategy = local.Strategy;
 
+const JWTStrategy = jwt.Strategy
+const ExtractJWT = jwt.ExtractJwt
+
 export const initializePassport = () => {
+
+	passport.use(passportStrategiesEnum.JWT, new JWTStrategy({
+		jwtFromRequest: ExtractJWT.fromExtractors([cookieExtractor]),
+		secretOrKey: PRIVATE_KEY_JWT
+	  }, async(jwt_payload, done) => {
+		try {
+		  return done(null, jwt_payload.user)
+		} catch (error) {
+		  return done(error)
+		}
+	  }))
+
+
 	passport.use(
 		"github",
 		new GitHubStrategy(
@@ -45,7 +65,7 @@ export const initializePassport = () => {
 
 
 	passport.use(
-		"register",
+		"local-register",
 		new LocalStrategy(
 			{
 				passReqToCallback: true, 
@@ -77,7 +97,7 @@ export const initializePassport = () => {
 		)
 	);
 	passport.use(
-		"login",
+		"local-login",
 		new LocalStrategy(
 			{
 				usernameField: "email"
@@ -120,3 +140,31 @@ export const initializePassport = () => {
 		done(null, user);
 	});
 };
+
+const cookieExtractor = (req) => {
+	let token = null
+	if(req && req.cookies){
+	  token = req.cookies['coderCookieToken']
+	}
+	return token
+  }
+  
+  export const passportCall = (strategy) => (req, res, next) => {
+	  if (strategy === passportStrategiesEnum.JWT) {
+		  passport.authenticate(strategy,{ session: false }, function (err, user, info) {
+			  if (err) return next(err);
+			  if (!user)
+				  return res
+					  .status(401)
+					  .send({
+						  status: "error",
+						  messages: info.messages ? info.messages : info.toString()
+					  });
+			  req.user = user;
+			  
+			  next();
+		  })(req, res, next);
+	  } else {
+		  next();
+	  }
+  };

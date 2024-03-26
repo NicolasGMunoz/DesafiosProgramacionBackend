@@ -1,75 +1,56 @@
+
 import { Router } from "express";
-import UsersManager from "../dao/dbManager/managers/users.managers.js";
+import { accessRolesEnum, passportStrategiesEnum } from "../config/enums.js";
 import passport from "passport";
+import { handlePolicies } from "../middlewares/auth.js";
+import { passportCall } from "../config/passport.config.js";
+import { generateCustomResponse } from "../middlewares/responses.js";
+import {
+	login,
+	github,
+	githubCallback,
+	logout,
+	register
+} from "../controllers/sessions.controller.js";
 
 const router = Router();
-const userManager = new UsersManager();
 
-router
-	.post(
-		"/register",
-		passport.authenticate("register", { failureRedirect: "fail-register" }),
-		async (req, res) => {
-			return res
-				.status(201)
-				.send({ status: "success", message: "user registered" });
-		}
-	)
-	.get("/fail-register", async (req, res) => {
-		return res.status(500).send({ status: "error", message: "register fail" });
-	})
-	.post(
-		"/login",
-		passport.authenticate("login", { failureRedirect: "fail-login" }),
-		async (req, res) => {
-			if (!req.user)
-				return res
-					.status(401)
-					.send({ status: "error", message: "invalid credentials" });
+router.post(
+	"/login",
+	passportCall(passportStrategiesEnum.NOTHING),
+	handlePolicies([accessRolesEnum.PUBLIC]),
+	generateCustomResponse,
+	login
+)
+.post(
+	"/register",
+	passportCall(passportStrategiesEnum.NOTHING),
+	handlePolicies([accessRolesEnum.PUBLIC]),
+	generateCustomResponse,
+	register
+)
+.get(
+	"/logout",
+	passportCall(passportStrategiesEnum.JWT),
+	handlePolicies([accessRolesEnum.USER, accessRolesEnum.ADMIN]),
+	generateCustomResponse,
+	logout
+)
+.get(
+	"/github",
+	passportCall(passportStrategiesEnum.GITHUB),
+	handlePolicies([accessRolesEnum.PUBLIC]),
+	generateCustomResponse,
+	passport.authenticate("github", { scope: ["user:email"] }),
+	github
+)
+.get(
+	"/github-callback",
+	passportCall(passportStrategiesEnum.GITHUB),
+	handlePolicies([accessRolesEnum.PUBLIC]),
+	generateCustomResponse,
+	passport.authenticate("github", { failureRedirect: "/login" }),
+	githubCallback
+)
 
-			req.session.user = {
-				name: `${req.user.first_name} ${req.user?.last_name ? req.user?.last_name : ""}`,
-				email: req.user.email,
-				age: req.user.age,
-				role: req.user.role
-			};
-			console.log("HOLA")
-			return res.send({ status: "success", message: "login success" });
-		}
-	)
-	.get("/fail-login", async (req, res) => {
-		return res.status(500).send({ status: "error", message: "login fail" });
-	})
-	.get("/logout", async (req, res) => {
-		req.session.destroy((error) => {
-			if (error)
-				return res
-					.status(500)
-					.send({ status: "error", message: error.message });
-			return res.redirect("/");
-		});
-	})
-	.get(
-		"/github",
-		passport.authenticate("github", { scope: ["user:email"] }),
-		async (req, res) => {
-	
-
-			res.send({ status: "success", message: "user registered" });
-		}
-	)
-	.get(
-		"/github-callback",
-		passport.authenticate("github", { failureRedirect: "/login" }),
-		async (req, res) => {
-			req.session.user = {
-				name: `${req.user.first_name} ${req.user?.last_name ? req.user?.last_name : ""}`,
-				email: req.user.email,
-				age: req.user.age,
-				role: req.user.role
-			};
-			return res.redirect("/products");
-		}
-	);
-
-export default router;
+export default router
