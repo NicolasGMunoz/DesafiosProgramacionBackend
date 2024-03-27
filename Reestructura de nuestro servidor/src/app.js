@@ -12,10 +12,10 @@ import { initializePassport } from "./config/passport.config.js";
 import passport from "passport";
 
 
-import SessionsRouter from "./routes/sessions.routes.js";
-import ProductsRouter from "./routes/products.routes.js";
-import CartsRouter from "./routes/carts.routes.js";
-import ViewsRouter from "./routes/views.routes.js";
+// import SessionsRouter from "./routes/sessions.routes.js";
+// import ProductsRouter from "./routes/products.routes.js";
+// import CartsRouter from "./routes/carts.routes.js";
+// import ViewsRouter from "./routes/views.routes.js";
 
 
 const app = express();
