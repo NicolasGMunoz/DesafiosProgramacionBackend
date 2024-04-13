@@ -1,10 +1,10 @@
-import { productsModel } from '../models/product.model.js'
+import  productsModel  from '../models/product.model.js'
 
 export default class Products {
     constructor(){
     }
 
-    getProducts = async () =>{
+    getProducts = async ({ limit, page, sort, query }) =>{
         const products = await productsModel.find().lean();
         return products;
     }

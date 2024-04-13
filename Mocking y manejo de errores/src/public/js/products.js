@@ -41,9 +41,8 @@ form.addEventListener("submit", async (evt) => {
         })
         const { payload } = await resultCart.json()
         const cartId = payload["_id"]
-        const result = await fetch(`/api/carts/${cartId}/products/${id}`, {
-          method: "POST",
-          body: "",
+        const result = await fetch(`/api/sessions/user-cart`, {
+          method: "GET",
           headers: {
             "Content-Type" : "application/json"
           }

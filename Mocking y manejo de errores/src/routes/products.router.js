@@ -1,7 +1,5 @@
 import { Router } from "express";
-import Products from "../dao/dbManagers/products.manager.js";
-import { validateProduct } from "../schemas/products.schema.js";
-import { productsFilePath } from "../utils.js";
+import toAsyncRouter from "async-express-decorator"
 import { accessRolesEnum, passportStrategiesEnum } from "../config/enums.js";
 import { handlePolicies } from "../middlewares/auth.js";
 import { passportCall } from "../config/passport.config.js";
@@ -14,7 +12,7 @@ import {
 	updateProduct
 } from "../controllers/products.controller.js";
 
-const router = Router();
+const router = toAsyncRouter(Router());;
 
 router
 	.get(
@@ -23,6 +21,13 @@ router
 		handlePolicies([accessRolesEnum.USER]),
 		generateCustomResponse,
 		getProducts
+	)
+	.get(
+		"/mockingproducts",
+		passportCall(passportStrategiesEnum.JWT),
+		handlePolicies([accessRolesEnum.USER]),
+		generateCustomResponse,
+		mockingProducts
 	)
 	.get(
 		"/:pid",

@@ -125,7 +125,9 @@ export const productDetail = async (req, res) => {
 
 export const cartDetail = async (req, res) => {
   try {
-    const cid = req.params.cid;
+  
+    const { cart: userCart } = req.user
+    const {_id: cid} = userCart
     const cart = await cartsManager.getById(cid);
     if (!cart)
       return res
@@ -133,6 +135,7 @@ export const cartDetail = async (req, res) => {
         .render(`<h2>Error 404: Cart with id ${cid} not found </h2>`);
     const products = cart.products;
     return res.render("cart", {
+      cart,
       products,
       user: req.user,
       style: "cart.css"
@@ -142,10 +145,6 @@ export const cartDetail = async (req, res) => {
   }
 }
 
-export const chat = async (req, res) => {
-  const messagesList = await messagesManager.getAll();
-  return res.render("chat", { messages: messagesList, style: "chat.css" });
-}
 	
 export const login = async (req, res) => {
   return res.render("login", { style: "login.css" });

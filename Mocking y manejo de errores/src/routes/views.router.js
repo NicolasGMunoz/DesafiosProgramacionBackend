@@ -6,7 +6,6 @@ import { passportCall } from "../config/passport.config.js";
 import { generateCustomResponse } from "../middlewares/responses.js";
 import {
 	cartDetail,
-	chat,
 	login,
 	productDetail,
 	productsView,
@@ -49,18 +48,11 @@ router
 		productDetail
 	)
 	.get(
-		"/carts/:cid",
+		"/carts/detail",
 		passportCall(passportStrategiesEnum.JWT),
-		handlePolicies([accessRolesEnum.USER, accessRolesEnum.ADMIN]),
+		handlePolicies([accessRolesEnum.USER]),
 		generateCustomResponse,
 		cartDetail
-	)
-	.get(
-		"/chat",
-		passportCall(passportStrategiesEnum.JWT),
-		handlePolicies([accessRolesEnum.USER, accessRolesEnum.ADMIN]),
-		generateCustomResponse,
-		chat
 	)
 	.get(
 		"/register",

@@ -1,6 +1,8 @@
 export const passportStrategiesEnum = {
-    JWT: 'jwt',
-    NOTHING: 'na'
+  JWT: 'jwt',
+  LOCAL: 'local',
+  GITHUB: 'github',
+  NOTHING: 'na'
   }
   
   export const accessRolesEnum = {

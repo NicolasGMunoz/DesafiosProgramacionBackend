@@ -1,7 +1,8 @@
 import fs from 'fs';
-import ProductManager from '../managers/productManager.js'
+import ProductManager from './productManager.js'
 import { __dirname } from '../../../util.js'
 import path from 'node:path';
+import { v4 as uuidv4 } from "uuid";
 const productsPath = path.join(__dirname, './files/products.json');
 const productManager = new ProductManager(productsPath);
 
@@ -13,18 +14,13 @@ class CartManager {
 
     //method of return json carts
     getCart = async () => {
-        try {
-            if (fs.existsSync(this.path)) {
-                const data = await fs.promises.readFile(this.path, 'utf-8');
-                const cart = JSON.parse(data);
-                return cart;
-            }
-            else {
-                return [];
-            }
-        } catch (error) {
-            console.log(error);
-        }
+		if (fs.existsSync(this.path)) {
+			const data = await fs.promises.readFile(this.path, "utf-8");
+			const carts = JSON.parse(data);
+			return carts;
+		} else {
+			return [];
+		}
     }
 
     //method of create cart and push to JSON

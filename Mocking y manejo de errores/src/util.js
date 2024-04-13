@@ -3,6 +3,7 @@ import { dirname, join } from "node:path";
 import jwt from "jsonwebtoken"
 import bcrypt from "bcrypt"
 import { PRIVATE_KEY_JWT } from "./config/constants.js";
+import { fakerES as faker } from "@faker-js/faker";
 
 const __filename = fileURLToPath(import.meta.url)
 export const __dirname = dirname(__filename)
@@ -33,3 +34,18 @@ export const authorization = (role) => {
     next()
   }
 }
+
+export const generateProducts = () => {
+	const product = {
+		_id: faker.database.mongodbObjectId(),
+		title: faker.commerce.productName(),
+		description: faker.commerce.productDescription(),
+		price: faker.commerce.price(),
+		thumbnail: faker.helpers.arrayElements([faker.image.url()]),
+		code: faker.string.uuid(),
+		stock: faker.number.int(1),
+		status: faker.datatype.boolean(),
+    category: faker.commerce.product()
+	};
+	return product;
+};
