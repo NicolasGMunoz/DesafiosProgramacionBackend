@@ -6,7 +6,7 @@ import { createHash , isValidPassword } from '../util.js'
 import { passportStrategiesEnum } from './enums.js'
 import { PRIVATE_KEY_JWT } from './constant.js'
 import jwt from'passport-jwt'
-
+import { addLogger } from "../utils/logger.js";
 
 const LocalStrategy = local.Strategy;
 
@@ -15,16 +15,22 @@ const ExtractJWT = jwt.ExtractJwt
 
 export const initializePassport = () => {
 
-	passport.use(passportStrategiesEnum.JWT, new JWTStrategy({
-		jwtFromRequest: ExtractJWT.fromExtractors([cookieExtractor]),
-		secretOrKey: PRIVATE_KEY_JWT
-	  }, async(jwt_payload, done) => {
-		try {
-		  return done(null, jwt_payload.user)
-		} catch (error) {
-		  return done(error)
-		}
-	  }))
+	passport.use(
+		passportStrategiesEnum.JWT,
+		new JWTStrategy(
+			{
+				jwtFromRequest: ExtractJWT.fromExtractors([cookieExtractor]),
+				secretOrKey: configs.privateKeyJWT
+			},
+			async (jwt_payload, done) => {
+				try {
+					return done(null, jwt_payload.user);
+				} catch (error) {
+					return done(error);
+				}
+			}
+		)
+	);
 
 
 	passport.use(

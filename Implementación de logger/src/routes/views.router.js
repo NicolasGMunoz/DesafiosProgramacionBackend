@@ -48,11 +48,18 @@ router
 		productDetail
 	)
 	.get(
-		"/carts/detail",
+		"/cart/detail",
 		passportCall(passportStrategiesEnum.JWT),
 		handlePolicies([accessRolesEnum.USER]),
 		generateCustomResponse,
 		cartDetail
+	)
+	.get(
+		"/chat",
+		passportCall(passportStrategiesEnum.JWT),
+		handlePolicies([accessRolesEnum.USER]),
+		generateCustomResponse,
+		chat
 	)
 	.get(
 		"/register",

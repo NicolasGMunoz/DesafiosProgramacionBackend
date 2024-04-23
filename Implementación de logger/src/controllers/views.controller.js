@@ -1,20 +1,12 @@
-import { cartDetail as cartDetailServices } from "../services/views.services.js"
-import { chat as chatServices } from "../services/views.services.js"
-import { login as loginServices } from "../services/views.services.js"
-import { productDetail as productDetailServices } from "../services/views.services.js"
-import { profile as profileServices } from "../services/views.services.js"
-import { productsView as productsViewServices } from "../services/views.services.js"
-import { register as registerServices } from "../services/views.services.js"
-import { realTimeProductsView as realTimeProductsViewServices } from "../services/views.services.js"
-
 import Products from "../dao/dbManagers/products.manager.js";
 import Carts from "../dao/dbManagers/carts.manager.js";
-import Messages from "../dao/dbManagers/messages.manager.js";
+
 
 
 const productsManager = new Products();
 const cartsManager = new Carts();
-const messagesManager = new Messages();
+
+
 
 
 export const realTimeProductsView = async (req, res) => {
@@ -46,6 +38,7 @@ export const realTimeProductsView = async (req, res) => {
       prevPage
     });
   } catch (error) {
+    req.logger.error(`${error.message}`);
     return res.status(500).send(`<h2>Error 500: ${error.message}</h2>`);
   }
 }
@@ -101,6 +94,7 @@ export const productsView = async (req, res) => {
       style: "products.css"
     });
   } catch (error) {
+    req.logger.error(`${error.message}`);
     return res.status(500).send(`<h2>Error 500: ${error.message} </h2>`);
   }
 }
@@ -119,6 +113,7 @@ export const productDetail = async (req, res) => {
       style: "product.css"
     });
   } catch (error) {
+    req.logger.error(`${error.message}`);
     return res.status(500).send(`<h2>Error 500: ${error.message} </h2>`);
   }
 }
@@ -141,6 +136,7 @@ export const cartDetail = async (req, res) => {
       style: "cart.css"
     });
   } catch (error) {
+    req.logger.error(`${error.message}`);
     return res.status(500).send(`<h2>Error 500: ${error.message}</h2>`);
   }
 }

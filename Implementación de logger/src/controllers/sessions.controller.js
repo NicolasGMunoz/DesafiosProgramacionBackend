@@ -54,7 +54,7 @@ export const login = async (req, res) => {
 		});
 		return res.sendSuccess(accessToken);
 	} catch (error) {
-		console.log(error.message);
+		req.logger.error(`${error.message}`);
 		return res.sendServerError(error.message);
 	}
 };
@@ -79,7 +79,9 @@ export const logout = async (req, res) => {
 	try {
 		const result = await logoutServices(req.user.email);
 		return res.clearCookie("coderCookieToken").redirect("/login");
-	} catch (error) {}
+	} catch (error) {
+		req.logger.error(`${error.message}`);
+	}
 };
 
 export const github = async (req, res) => {
@@ -104,6 +106,7 @@ export const getCartByUser = async (req, res) => {
 		
 		if(cid) return res.send({ status: "success", payload: {_id: cid}  })
 	} catch (error) {
+		req.logger.error(`${error.message}`);
 		return res.sendServerError(error.message);
 	} 
 }
