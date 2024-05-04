@@ -5,8 +5,7 @@ import { createProduct as createProductServices } from "../services/products.ser
 import { updateProduct as updateProductServices } from "../services/products.services.js";
 import { deleteProduct as deleteProductServices } from "../services/products.services.js";
 import { generateProducts } from "../utils.js";
-import CustomError from "../middlewares/errors/CustomError.js"
-import EnumErrors from "../middlewares/errors/enums.js"
+import EnumErrors from "../middlewares/errors/enums.js";
 
 export const getProducts = async (req, res) => {
 	try {
@@ -83,7 +82,8 @@ export const createProduct = async (req, res) => {
 			req.logger.warning(`${result.error}`)
 			return res.sendClientError(result.error);
 		}
-		const newProduct = await createProductServices(result.data);
+		const user = req.user
+		const newProduct = await createProductServices(result.data, user);
 		const { products: productsEmit } = await getProductsServices(options);
 		io.emit("refreshProducts", productsEmit);
 		return res.sendSuccess(newProduct);
@@ -101,6 +101,8 @@ export const updateProduct = async (req, res) => {
 			page: 1,
 			query: {}
 		};
+
+		const user = req.user
 		const io = req.app.get("socketio");
 		const result = validateProduct(req.body);
 		if (result.error) return res.sendClientError(result.error);
@@ -110,7 +112,7 @@ export const updateProduct = async (req, res) => {
 		if (!productExists)
 			return res.sendNotFoundError("Product not found, incorrect id");
 
-		const productUpdated = await updateProductServices(pid, result.data);
+		const productUpdated = await updateProductServices(pid, result.data, user);
 		const { products: productsEmit } = await getProductsServices(options);
 		io.emit("refreshProducts", productsEmit);
 
@@ -128,14 +130,14 @@ export const deleteProduct = async (req, res) => {
 			page: 1,
 			query: {}
 		};
-
+		const user = req.user
 		const io = req.app.get("socketio");
 
 		const productExists = await getProduct(pid);
 		if (!productExists)
 			return res.sendNotFoundError("Product not found, incorrect id");
 
-		const deletedProduct = await deleteProductServices(pid);
+		const deletedProduct = await deleteProductServices(pid, user);
 		const { products: productsEmit } = await getProductsServices(options);
 		io.emit("refreshProducts", productsEmit);
 		return res.sendSuccess("Product deleted succesfully");

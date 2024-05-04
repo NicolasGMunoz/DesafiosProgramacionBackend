@@ -1,4 +1,4 @@
-import usersModel from "../models/user.model.js";
+import usersModel from "./models/users.model.js";
 
 export default class Users {
 	constructor() {}
@@ -11,6 +11,10 @@ export default class Users {
 		return exists;
 	};
 
+	getById = async (uid) => {
+		const user = await usersModel.findById(uid)
+		return user
+	}
 	getByEmail = async (email) => {
 		const exists = await usersModel.findOne({ email }).lean();
 		return exists;
@@ -29,9 +33,12 @@ export default class Users {
 
 	addCartToUser = async (user, cartId) => {
 		const email = user.email;
-		const newUser = await usersModel.findOneAndUpdate({ email }, { cart: cartId });
-		const userUpdated = await usersModel.findOne({email}).lean()
-		return userUpdated
+		const newUser = await usersModel.findOneAndUpdate(
+			{ email },
+			{ cart: cartId }
+		);
+		const userUpdated = await usersModel.findOne({ email }).lean();
+		return userUpdated;
 	};
 
 	deleteCartFromUser = async (email) => {
@@ -41,5 +48,16 @@ export default class Users {
 			usersModel.findOneAndUpdate({ email }, user);
 		}
 		return user;
+	};
+
+	updatePassword = async (email, password) => {
+		const newUser = await usersModel.findOneAndUpdate({ email }, { password }).lean();
+		return newUser;
+	};
+
+	changeRole = async (uid, role) => {
+		const result = await usersModel.findByIdAndUpdate({ _id: uid }, { role });
+		const userUpdated = await usersModel.findById(uid).lean()
+		return userUpdated
 	};
 }

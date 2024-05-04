@@ -115,8 +115,9 @@ export const initializePassport = () => {
 						password === "adminCod3r123"
 					) {
 						const user = {
-              _id: 1,
-							first_name: `Admin Coder`,
+							_id: 1,
+							first_name: `Admin`,
+							last_name: "Coder",
 							email: username,
 							role: "admin"
 						};
@@ -156,21 +157,25 @@ const cookieExtractor = (req) => {
   }
   
   export const passportCall = (strategy) => (req, res, next) => {
-	  if (strategy === passportStrategiesEnum.JWT) {
-		  passport.authenticate(strategy,{ session: false }, function (err, user, info) {
-			  if (err) return next(err);
-			  if (!user)
-				  return res
-					  .status(401)
-					  .send({
-						  status: "error",
-						  messages: info.messages ? info.messages : info.toString()
-					  });
-			  req.user = user;
-			  
-			  next();
-		  })(req, res, next);
-	  } else {
-		  next();
-	  }
-  };
+	if (strategy === passportStrategiesEnum.JWT) {
+		passport.authenticate(
+			strategy,
+			{ session: false },
+			function (err, user, info) {
+				if (err) return next(err);
+				if (!user) {
+					req.logger.debug(`${info.messages ? info.messages : info.toString()}`)
+					return res.status(401).send({
+						status: "error",
+						messages: info.messages ? info.messages : info.toString()
+					});
+				}
+				req.user = user;
+
+				next();
+			}
+		)(req, res, next);
+	} else {
+		next();
+	}
+};
