@@ -20,6 +20,8 @@ const configs = {
   mongoUrl: process.env.MONGO_URL,
   persistence: process.env.PERSISTENCE || 'MONGO',
   privateKeyJWT: process.env.PRIVATE_KEY_JWT,
+  userNodeMailer: process.env.USER_NODEMAILER,
+  passwordNodeMailer: process.env.PASSWORD_NODEMAILER,
   environment
 }
 export default configs

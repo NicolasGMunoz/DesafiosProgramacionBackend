@@ -9,10 +9,11 @@ import {
 	deleteProduct,
 	getProduct,
 	getProducts,
-	updateProduct
+	updateProduct,
+	mockingProducts
 } from "../controllers/products.controller.js";
 
-const router = toAsyncRouter(Router());;
+const router = toAsyncRouter(Router());
 
 router
 	.get(
@@ -39,7 +40,7 @@ router
 	.post(
 		"/",
 		passportCall(passportStrategiesEnum.JWT),
-		handlePolicies([accessRolesEnum.USER]),
+		handlePolicies([accessRolesEnum.USER, accessRolesEnum.PREMIUM]),
 		generateCustomResponse,
 		createProduct
 	)

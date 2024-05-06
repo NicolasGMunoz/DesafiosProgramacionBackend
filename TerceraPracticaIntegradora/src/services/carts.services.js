@@ -13,13 +13,11 @@ const cartsManager = new Carts();
 
 
 export const getCart = async (cid) => {
-	const cart  = await cartsRepository.getCartById(cid)
-
+	const cart = await cartsRepository.getCartById(cid);
 	return cart;
 };
 
 export const createCart = async () => {
-
 	const cart = await cartsRepository.create();
 	return cart;
 };
@@ -49,12 +47,11 @@ export const deleteCartProducts = async (cid) => {
 };
 
 export const deleteProduct = async (cid, pid) => {
-	const result = await cartsRepository.deleteCartProducts(cid, pid);
-	return result
+	const result = await cartsRepository.deleteProductCart(cid, pid);
+	return result;
 };
 
 export const purchaseProducts = async (cid, user) => {
-
 	const cart = await cartsRepository.getCartById(cid);
 	const outStock = [];
 	let amount = 0;
@@ -62,7 +59,7 @@ export const purchaseProducts = async (cid, user) => {
 		if (product.stock >= quantity) {
 			amount += product.price * quantity;
 			product.stock -= quantity;
-
+			
 			await productsRepository.update(product._id, product);
 		} else {
 			outStock.push({ product, quantity });

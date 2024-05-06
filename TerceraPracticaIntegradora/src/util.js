@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken"
 import bcrypt from "bcrypt"
 import { PRIVATE_KEY_JWT } from "./config/constants.js";
 import { fakerES as faker } from "@faker-js/faker";
+import configs from "./config.js";
 
 const __filename = fileURLToPath(import.meta.url)
 export const __dirname = dirname(__filename)
@@ -23,8 +24,8 @@ export const isValidPassowrd = (plainPassword, hashedPassword) => {
   return result
 }
 
-export const generateToken = (user) => {
-	const token = jwt.sign( {user} , PRIVATE_KEY_JWT, { expiresIn: '24h'});
+export const generateToken = (user, expires = "24h") => {
+	const token = jwt.sign({ user }, configs.privateKeyJWT, { expiresIn: expires });
   return token
 };
 

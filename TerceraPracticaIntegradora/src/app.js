@@ -23,7 +23,7 @@ const app = express();
 const PORT = configs.port;
 
 
-app.engine(".hbs", handlebars.engine({ extname: ".hbs" }));
+app.engine(".handlebarss", handlebars.engine({ extname: ".handlebars" }));
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", ".hbs");
 app.use(addLogger)
@@ -79,15 +79,3 @@ try {
 	console.log(error.message)
 	mongoose.disconnect()
 }
-
-
-
-
-
-
-
-
-
-
-
-

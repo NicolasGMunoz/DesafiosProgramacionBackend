@@ -1,7 +1,7 @@
-import UsersDto from "../DTO/users.dto.js";
+import UsersDto from "../DTOs/users.dto.js";
 
 export default class UsersRepository {
-  constructor(dao) {
+	constructor(dao) {
 		this.dao = dao;
 	}
 
@@ -10,18 +10,23 @@ export default class UsersRepository {
 		return user;
 	};
 
+	getById = async (uid) => {
+		const user = await this.dao.getById(uid)
+		return user
+	}
+
   showPublicUser = async (user) => {
     const finalUser = new UsersDto(user)
     return finalUser
   }
 
-  addCartToUser = async (user, cartId) => {
+	addCartToUser = async (user, cartId) => {
+		
+		const result = await this.dao.addCartToUser(user, cartId)
+		return result
+	}
 
-	const result = await this.dao.addCartToUser(user, cartId)
-	return result
-}
-
-  register = async (newUser) => {
+	register = async (newUser) => {
 		const result = await this.dao.create(newUser);
 		return result;
 	};
@@ -31,4 +36,13 @@ export default class UsersRepository {
 		return result;
 	};
 
+	updatePassword = async (email, password) => {
+		const result = await this.dao.updatePassword(email, password)
+		return result
+	}
+
+	changeRole = async (uid, role) => {
+		const result = await this.dao.changeRole(uid, role)
+		return result
+	}
 }

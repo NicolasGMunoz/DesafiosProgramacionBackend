@@ -1,9 +1,10 @@
 import Products from "../dao/dbManagers/products.manager.js";
-import { productsFilePath } from "../util.js";
 import ProductsRepository from "../repositories/products.repository.js";
+import { InvalidOwnerError } from "../utils/custom.exceptions.js";
+import UsersRepository from "../repositories/users.repository.js";
 
-const productsManager = new Products();
-const productsRepository = ProductsRepository();
+const productsRepository = new ProductsRepository()
+const usersRepository = new UsersRepository()
 
 export const getProducts = async (options, sort, queryP, queryValue) => {
 
@@ -18,8 +19,7 @@ export const getProducts = async (options, sort, queryP, queryValue) => {
 	}
 	if (queryP && queryValue) {
 		options.query[queryP] = queryValue;
-	}
-  // 
+	} 
 	const key = Object.keys(options.query)[0];
 	const value = Object.values(options.query)[0];
 	if (key?.toLowerCase() === "stock") {
@@ -56,12 +56,12 @@ export const getProducts = async (options, sort, queryP, queryValue) => {
 };
 
 export const getProduct = async (pid) => {
-	const product = productsRepository.getById(pid)
+	const product = await productsRepository.getById(pid)
 	return product
 };
 
-export const createProduct = async (product) => {
-	const result = productsRepository.create(product)
+export const createProduct = async (product, user) => {
+	const result = await productsRepository.create(product)
 	return result
 };
 
@@ -70,7 +70,12 @@ export const updateProduct = async (pid, product) => {
 	return updatedProduct
 };
 
-export const deleteProduct = async (pid) => {
+export const deleteProduct = async (pid, user) => {
+	const product = await productsRepository.getById(pid)
+
+	if(user.role === "premium" && user.email != product.owner){
+			throw new InvalidOwnerError("Premium user can only update their products")
+	}
 	const deletedProduct = await productsRepository.delete(pid);
 	return deletedProduct
 };
