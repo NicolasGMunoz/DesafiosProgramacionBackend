@@ -6,6 +6,7 @@ import session from "express-session";
 import MongoStore from "connect-mongo";
 import cookieParser from "cookie-parser";
 import { __dirname } from "./util.js";
+import { __mainDirname } from "./utils.js"
 import configs from "./config.js";
 import { initializePassport } from "./config/passport.config.js";
 import passport from "passport";
@@ -21,6 +22,21 @@ import { addLogger } from "./utils/logger.js";
 
 const app = express();
 const PORT = configs.port;
+
+const swaggerOptions = {
+	definition: {
+	  openapi: '3.0.1',
+	  info: {
+		title: 'Documentación del proyecto API de ecommerce',
+		description: 'API pensada en resolver el proceso de compras y ventas de productos en una plataforma ecommerce'
+	  }
+	},
+	apis: [`${__mainDirname}/docs/**/*.yaml`]
+  }
+
+const specs = swaggerJsdoc(swaggerOptions)
+app.use('/api/docs/', swaggerUiExpress.serve, swaggerUiExpress.setup(specs))
+
 
 
 app.engine(".handlebarss", handlebars.engine({ extname: ".handlebars" }));

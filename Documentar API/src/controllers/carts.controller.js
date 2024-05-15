@@ -23,7 +23,7 @@ export const getCart = async (req, res) => {
 export const createCart = async (req, res) => {
 	try {
 		const cart = await createCartServices();
-		return res.sendSuccess(cart);
+		return res.sendSuccessNewResource(cart);
 	} catch (error) {
 		return res.sendServerError(error.message);
 	}
@@ -32,6 +32,7 @@ export const addProduct = async (req, res) => {
 	try {
 		const { pid, cid } = req.params;
 		const user = req.user;
+
 		const product = await getProductServices(pid);
 		if (!product) return res.sendNotFoundError("Product not found");
 
