@@ -65,15 +65,20 @@ export const login = async (req, res) => {
 export const register = async (req, res) => {
 	try {
 		const resultUser = validateUser(req.body);
-		if (resultUser.error) return res.sendUnproccesableEntity(resultUser.error);
+		if (resultUser.error) {
+			req.logger.error(resultUser.error)
+			return res.sendUnproccesableEntity(resultUser.error);
+		}
 		const user = resultUser.data;
-
 		const existsUser = await loginServices(user.email);
-		if (existsUser) return res.sendClientError("user already exists");
-
+		if (existsUser) {
+			req.logger.error("user already exists")
+			return res.sendClientError("user already exists");
+		}
 		const registeredUser = await registerServices(user);
-		return res.sendSuccessNewResource({ payload: registeredUser });
+		return res.sendSuccessNewResource(registeredUser);
 	} catch (error) {
+		req.logger.fatal(error.message)
 		return res.sendServerError(error.message);
 	}
 };
@@ -130,6 +135,7 @@ export const passwordLink = async (req, res) => {
 				req.logger.error("Error al enviar email")
 				return res.redirect("/login")
 			}
+			// TODO: retornar el response correspondiente
 			return res.sendSuccess("Email was sent successfully")
 		}
 	} catch (error) {
