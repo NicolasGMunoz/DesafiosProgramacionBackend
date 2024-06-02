@@ -7,6 +7,7 @@ import { passportStrategiesEnum } from './enums.js'
 import { PRIVATE_KEY_JWT } from './constant.js'
 import jwt from'passport-jwt'
 import { addLogger } from "../utils/logger.js";
+import configs from "../config.js";
 
 const LocalStrategy = local.Strategy;
 

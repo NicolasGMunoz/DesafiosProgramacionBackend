@@ -14,6 +14,7 @@ import SessionsRouter from "./routes/sessions.routes.js";
 import ProductsRouter from "./routes/products.routes.js";
 import CartsRouter from "./routes/carts.routes.js";
 import ViewsRouter from "./routes/views.routes.js";
+import UsersRouter from "./routes/users.router.js"
 import errorHandler from './middlewares/errors/index.js';
 import { addLogger } from "./utils/logger.js";
 

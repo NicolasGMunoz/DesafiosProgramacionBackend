@@ -16,27 +16,32 @@ export const cartsFilePath = join(__dirname, "./files/carts.json");
 
 
 
+
 export const createHash = (password) => {
-  const salt = bcrypt.hashSync(password, bcrypt.genSaltSync(10))
-  return salt;
-}
+	const salt = bcrypt.hashSync(password, bcrypt.genSaltSync(10));
+	return salt;
+};
 
 export const isValidPassowrd = (plainPassword, hashedPassword) => {
-  const result = bcrypt.compareSync(plainPassword, hashedPassword)
-  return result;
-}
+	const result = bcrypt.compareSync(plainPassword, hashedPassword);
+	return result;
+};
 
 export const generateToken = (user, expires = "24h") => {
+
 	const token = jwt.sign({ user }, configs.privateKeyJWT, { expiresIn: expires });
-  return token;
+	return token;
 };
 
 export const authorization = (role) => {
-  return async (req, res, next) => {
-    if(req.user.role !== role) return res.status(403).send({ status: "error", message: "not permissions" })
-    next();
-  }
-}
+	return async (req, res, next) => {
+		if (req.user.role !== role)
+			return res
+				.status(403)
+				.send({ status: "error", message: "not permissions" });
+		next();
+	};
+};
 
 export const generateProducts = () => {
 	const product = {

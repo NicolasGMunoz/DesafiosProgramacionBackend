@@ -3,7 +3,8 @@ import configs from "../config.js";
 
 const ENVIRONMENT = configs.environment;
 console.log(ENVIRONMENT);
-let logger;
+
+export let logger;
 
 const customLevelOptions = {
 	levels: {
@@ -43,7 +44,6 @@ const loggerFormat = winston.format.combine(
 );
 
 if (ENVIRONMENT == "PROD") {
-	
 	logger = winston.createLogger({
 		levels: customLevelOptions.levels,
 		transports: [
@@ -70,7 +70,6 @@ if (ENVIRONMENT == "PROD") {
 		]
 	});
 } else {
-	
 	logger = winston.createLogger({
 		levels: customLevelOptions.levels,
 		transports: [new winston.transports.Console({ level: "debug", format: loggerFormat })]

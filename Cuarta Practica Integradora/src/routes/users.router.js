@@ -3,29 +3,41 @@ import { accessRolesEnum, passportStrategiesEnum } from "../config/enums.js";
 import { handlePolicies } from "../middlewares/auth.js";
 import { passportCall } from "../config/passport.config.js";
 import { generateCustomResponse } from "../middlewares/responses.js";
+import {passwordChange,changeRoleUser} from "../controllers/users.controller.js";
+import { getUserById } from "../controllers/users.controller.js";
+import uploader from '../middlewares/uploader.js'
 
-import {
-	getCartByUser,
-	passwordChange,
-	changeRoleUser
-} from "../controllers/users.controller.js";
-
-const router = Router();
+const router = Router()
 
 router
 	.get(
-		"/user-cart",
-		passportCall(passportStrategiesEnum.JWT),
-		handlePolicies([accessRolesEnum.USER]),
-		generateCustomResponse,
-		getCartByUser
-	)
-	.put(
-		"/password-change",
+		"/:uid",
 		passportCall(passportStrategiesEnum.NOTHING),
-		handlePolicies([accessRolesEnum.PUBLIC]),
+		handlePolicies([
+			accessRolesEnum.PUBLIC,
+			accessRolesEnum.PREMIUM,
+			accessRolesEnum.ADMIN
+		]),
 		generateCustomResponse,
-		passwordChange
+		getUserById
+	)
+	.post(
+		"/:uid/documents",
+		passportCall(passportStrategiesEnum.JWT),
+		handlePolicies([
+			accessRolesEnum.USER,
+			accessRolesEnum.PREMIUM,
+			accessRolesEnum.ADMIN
+		]),
+		uploader.fields([
+			{ name: "perfil" },
+			{ name: "identificacion" },
+			{ name: "productos" },
+			{ name: "domicilio" },
+			{ name: "cuenta" }
+		]),
+		generateCustomResponse,
+		uploadDocuments
 	)
 	.put(
 		"/premium/:uid",
@@ -37,6 +49,6 @@ router
 		]),
 		generateCustomResponse,
 		changeRoleUser
-	);
+	)
 
-export default router;
+export default router

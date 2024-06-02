@@ -10,10 +10,9 @@ import {
 	githubCallback,
 	logout,
 	register,
-	passwordLink,
 	getCartByUser,
-	passwordChange,
-	changeRoleUser
+	passwordLink,
+	passwordChange
 } from "../controllers/sessions.controller.js";
 
 const router = Router();
@@ -77,12 +76,5 @@ router
 		generateCustomResponse,
 		passwordChange
 	)
-	.put(
-		"/premium/:uid",
-		passportCall(passportStrategiesEnum.JWT),
-		handlePolicies([accessRolesEnum.USER, accessRolesEnum.PREMIUM, accessRolesEnum.ADMIN]),
-		generateCustomResponse,
-		changeRoleUser
-	);
 
 export default router;
